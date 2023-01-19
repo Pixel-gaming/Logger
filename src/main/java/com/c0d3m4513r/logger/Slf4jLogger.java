@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 
-
 //This converts a slf4j:1.7.15 or later Logger into a Logger compatible with the API
 @AllArgsConstructor
 public class Slf4jLogger implements Logger {
@@ -17,6 +16,122 @@ public class Slf4jLogger implements Logger {
         this(logger, org.slf4j.Logger.class);
     }
 
+    @Override
+    public boolean isLogLevelEnabled(LogLevel level) {
+        switch (level){
+            case Trace: return isTraceEnabled();
+            case Debug: return isDebugEnabled();
+            case Info: return isInfoEnabled();
+            case Warn: return isWarnEnabled();
+            case Error: return isErrorEnabled();
+        }
+        return false;
+    }
+
+    @Override
+    public void log(LogLevel level, String msg) {
+        switch (level){
+            case Trace:
+                trace(msg);
+                break;
+            case Debug:
+                debug(msg);
+                break;
+            case Info:
+                info(msg);
+                break;
+            case Warn:
+                warn(msg);
+                break;
+            case Error:
+                error(msg);
+                break;
+        }
+    }
+
+    @Override
+    public void log(LogLevel level, String format, Object arg) {
+        switch (level){
+            case Trace:
+                trace(format, arg);
+                break;
+            case Debug:
+                debug(format, arg);
+                break;
+            case Info:
+                info(format, arg);
+                break;
+            case Warn:
+                warn(format, arg);
+                break;
+            case Error:
+                error(format, arg);
+                break;
+        }
+    }
+
+    @Override
+    public void log(LogLevel level, String format, Object arg1, Object arg2) {
+        switch (level){
+            case Trace:
+                trace(format, arg1, arg2);
+                break;
+            case Debug:
+                debug(format, arg1, arg2);
+                break;
+            case Info:
+                info(format, arg1, arg2);
+                break;
+            case Warn:
+                warn(format, arg1, arg2);
+                break;
+            case Error:
+                error(format, arg1, arg2);
+                break;
+        }
+    }
+
+    @Override
+    public void log(LogLevel level, String format, Object... arguments) {
+        switch (level){
+            case Trace:
+                trace(format, arguments);
+                break;
+            case Debug:
+                debug(format, arguments);
+                break;
+            case Info:
+                info(format, arguments);
+                break;
+            case Warn:
+                warn(format, arguments);
+                break;
+            case Error:
+                error(format, arguments);
+                break;
+        }
+    }
+
+    @Override
+    public void log(LogLevel level, String msg, Throwable t) {
+        switch (level){
+            case Trace:
+                trace(msg, t);
+                break;
+            case Debug:
+                debug(msg, t);
+                break;
+            case Info:
+                info(msg, t);
+                break;
+            case Warn:
+                warn(msg, t);
+                break;
+            case Error:
+                error(msg, t);
+                break;
+        }
+    }
 
     @SneakyThrows
     @Override

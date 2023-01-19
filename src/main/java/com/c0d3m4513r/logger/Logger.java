@@ -1,4 +1,5 @@
-package com.c0d3m4513r.logger; /**
+package com.c0d3m4513r.logger;
+/**
  * Copyright (c) 2004-2022 QOS.ch
  * All rights reserved.
  *
@@ -23,80 +24,101 @@ package com.c0d3m4513r.logger; /**
  *
  */
 
-import org.slf4j.Marker;
-import org.slf4j.event.Level;
-
-
-/**
- * The org.slf4j.Logger interface is the main user entry point of SLF4J API.
- * It is expected that logging takes place through concrete implementations
- * of this interface.
- *
- * <H3>Typical usage pattern:</H3>
- * <pre>
- * import org.slf4j.Logger;
- * import org.slf4j.LoggerFactory;
- *
- * public class Wombat {
- *
- *   <span style="color:green">final static Logger logger = LoggerFactory.getLogger(Wombat.class);</span>
- *   Integer t;
- *   Integer oldT;
- *
- *   public void setTemperature(Integer temperature) {
- *     oldT = t;
- *     t = temperature;
- *     <span style="color:green">logger.debug("Temperature set to {}. Old temperature was {}.", t, oldT);</span>
- *     if (temperature.intValue() &gt; 50) {
- *       <span style="color:green">logger.info("Temperature has risen above 50 degrees.");</span>
- *     }
- *   }
- * }
- * </pre>
- *
- * <p>Note that version 2.0 of the SLF4J API introduces a <a href="../../../manual.html#fluent">fluent api</a>,
- * the most significant API change to occur in the last 20 years.
- *
- * <p>Be sure to read the FAQ entry relating to <a href="../../../faq.html#logging_performance">parameterized
- * logging</a>. Note that logging statements can be parameterized in
- * <a href="../../../faq.html#paramException">presence of an exception/throwable</a>.
- *
- * <p>Once you are comfortable using loggers, i.e. instances of this interface, consider using
- * <a href="MDC.html">MDC</a> as well as <a href="Marker.html">Markers</a>.
- *
- * @author Ceki G&uuml;lc&uuml;
- */
 public interface Logger {
+    /**
+     * Is the logger instance enabled for the specified level?
+     *
+     * @param level the level to log at
+     * @return True if this Logger is enabled for the TRACE level,
+     *         false otherwise.
+     */
+    boolean isLogLevelEnabled(LogLevel level);
 
     /**
-     * Case-insensitive String constant used to retrieve the name of the root logger.
+     * Log a message at the specified level.
      *
-     * @since 1.3
+     * @param level the level to log at
+     * @param msg the message string to be logged
      */
-    final public String ROOT_LOGGER_NAME = "ROOT";
+    void log(LogLevel level, String msg);
+
+    /**
+     * Log a message at the specified level according to the specified format
+     * and argument.
+     *
+     * <p>This form avoids superfluous object creation when the logger
+     * is disabled for the TRACE level.
+     *
+     * @param level the level to log at
+     * @param format the format string
+     * @param arg    the argument
+     */
+    void log(LogLevel level, String format, Object arg);
+
+    /**
+     * Log a message at the specified level according to the specified format
+     * and arguments.
+     *
+     * <p>This form avoids superfluous object creation when the logger
+     * is disabled for the TRACE level.
+     *
+     * @param level the level to log at
+     * @param format the format string
+     * @param arg1   the first argument
+     * @param arg2   the second argument
+     */
+    void log(LogLevel level, String format, Object arg1, Object arg2);
+
+    /**
+     * Log a message at the specified level according to the specified format
+     * and arguments.
+     *
+     * <p>This form avoids superfluous string concatenation when the logger
+     * is disabled for the TRACE level. However, this variant incurs the hidden
+     * (and relatively small) cost of creating an <code>Object[]</code> before invoking the method,
+     * even if this logger is disabled for TRACE. The variants taking {@link #trace(String, Object) one} and
+     * {@link #trace(String, Object, Object) two} arguments exist solely in order to avoid this hidden cost.
+     *
+     * @param level the level to log at
+     * @param format    the format string
+     * @param arguments a list of 3 or more arguments
+     */
+    void log(LogLevel level, String format, Object... arguments);
+
+    /**
+     * Log an exception (throwable) at the specified level with an
+     * accompanying message.
+     *
+     * @param level the level to log at
+     * @param msg the message accompanying the exception
+     * @param t   the exception (throwable) to log
+     */
+    void log(LogLevel level, String msg, Throwable t);
 
     /**
      * Return the name of this <code>Logger</code> instance.
      * @return name of this logger instance
      */
-    public String getName();
+    String getName();
 
     /**
      * Is the logger instance enabled for the TRACE level?
      *
      * @return True if this Logger is enabled for the TRACE level,
      *         false otherwise.
-     * @since 1.4
      */
-    public boolean isTraceEnabled();
+    default boolean isTraceEnabled() {
+        return isLogLevelEnabled(LogLevel.Trace);
+    }
 
     /**
      * Log a message at the TRACE level.
      *
      * @param msg the message string to be logged
-     * @since 1.4
      */
-    public void trace(String msg);
+    default void trace(String msg) {
+        log(LogLevel.Trace, msg);
+    }
 
     /**
      * Log a message at the TRACE level according to the specified format
@@ -107,9 +129,10 @@ public interface Logger {
      *
      * @param format the format string
      * @param arg    the argument
-     * @since 1.4
      */
-    public void trace(String format, Object arg);
+    default void trace(String format, Object arg){
+        log(LogLevel.Trace, format, arg);
+    }
 
     /**
      * Log a message at the TRACE level according to the specified format
@@ -121,9 +144,10 @@ public interface Logger {
      * @param format the format string
      * @param arg1   the first argument
      * @param arg2   the second argument
-     * @since 1.4
      */
-    public void trace(String format, Object arg1, Object arg2);
+    default void trace(String format, Object arg1, Object arg2){
+       log(LogLevel.Trace, format, arg1, arg2);
+    }
 
     /**
      * Log a message at the TRACE level according to the specified format
@@ -137,9 +161,10 @@ public interface Logger {
      *
      * @param format    the format string
      * @param arguments a list of 3 or more arguments
-     * @since 1.4
      */
-    public void trace(String format, Object... arguments);
+    default void trace(String format, Object... arguments){
+        log(LogLevel.Trace, format, arguments);
+    }
 
     /**
      * Log an exception (throwable) at the TRACE level with an
@@ -147,9 +172,10 @@ public interface Logger {
      *
      * @param msg the message accompanying the exception
      * @param t   the exception (throwable) to log
-     * @since 1.4
      */
-    public void trace(String msg, Throwable t);
+    default void trace(String msg, Throwable t){
+        log(LogLevel.Trace, msg, t);
+    }
 
     /**
      * Is the logger instance enabled for the DEBUG level?
@@ -157,14 +183,18 @@ public interface Logger {
      * @return True if this Logger is enabled for the DEBUG level,
      *         false otherwise.
      */
-    public boolean isDebugEnabled();
+    default boolean isDebugEnabled(){
+        return isLogLevelEnabled(LogLevel.Debug);
+    }
 
     /**
      * Log a message at the DEBUG level.
      *
      * @param msg the message string to be logged
      */
-    public void debug(String msg);
+    default void debug(String msg){
+        log(LogLevel.Debug, msg);
+    }
 
     /**
      * Log a message at the DEBUG level according to the specified format
@@ -176,7 +206,9 @@ public interface Logger {
      * @param format the format string
      * @param arg    the argument
      */
-    public void debug(String format, Object arg);
+    default void debug(String format, Object arg){
+        log(LogLevel.Debug, format, arg);
+    }
 
     /**
      * Log a message at the DEBUG level according to the specified format
@@ -189,7 +221,9 @@ public interface Logger {
      * @param arg1   the first argument
      * @param arg2   the second argument
      */
-    public void debug(String format, Object arg1, Object arg2);
+    default void debug(String format, Object arg1, Object arg2){
+        log(LogLevel.Debug, format, arg1, arg2);
+    }
 
     /**
      * Log a message at the DEBUG level according to the specified format
@@ -205,7 +239,9 @@ public interface Logger {
      * @param format    the format string
      * @param arguments a list of 3 or more arguments
      */
-    public void debug(String format, Object... arguments);
+    default void debug(String format, Object... arguments){
+        log(LogLevel.Debug, format, arguments);
+    }
 
     /**
      * Log an exception (throwable) at the DEBUG level with an
@@ -214,7 +250,9 @@ public interface Logger {
      * @param msg the message accompanying the exception
      * @param t   the exception (throwable) to log
      */
-    public void debug(String msg, Throwable t);
+    default void debug(String msg, Throwable t){
+        log(LogLevel.Debug, msg, t);
+    }
 
     /**
      * Is the logger instance enabled for the INFO level?
@@ -222,14 +260,18 @@ public interface Logger {
      * @return True if this Logger is enabled for the INFO level,
      *         false otherwise.
      */
-    public boolean isInfoEnabled();
+    default boolean isInfoEnabled(){
+        return isLogLevelEnabled(LogLevel.Info);
+    }
 
     /**
      * Log a message at the INFO level.
      *
      * @param msg the message string to be logged
      */
-    public void info(String msg);
+    default void info(String msg){
+        log(LogLevel.Info, msg);
+    }
 
     /**
      * Log a message at the INFO level according to the specified format
@@ -241,7 +283,9 @@ public interface Logger {
      * @param format the format string
      * @param arg    the argument
      */
-    public void info(String format, Object arg);
+    default void info(String format, Object arg){
+        log(LogLevel.Info, format, arg);
+    }
 
     /**
      * Log a message at the INFO level according to the specified format
@@ -254,7 +298,9 @@ public interface Logger {
      * @param arg1   the first argument
      * @param arg2   the second argument
      */
-    public void info(String format, Object arg1, Object arg2);
+    default void info(String format, Object arg1, Object arg2){
+        log(LogLevel.Info, format, arg1, arg2);
+    }
 
     /**
      * Log a message at the INFO level according to the specified format
@@ -270,7 +316,9 @@ public interface Logger {
      * @param format    the format string
      * @param arguments a list of 3 or more arguments
      */
-    public void info(String format, Object... arguments);
+    default void info(String format, Object... arguments){
+        log(LogLevel.Info, format, arguments);
+    }
 
     /**
      * Log an exception (throwable) at the INFO level with an
@@ -279,7 +327,9 @@ public interface Logger {
      * @param msg the message accompanying the exception
      * @param t   the exception (throwable) to log
      */
-    public void info(String msg, Throwable t);
+    default void info(String msg, Throwable t){
+        log(LogLevel.Info, msg, t);
+    }
 
     /**
      * Is the logger instance enabled for the WARN level?
@@ -287,14 +337,18 @@ public interface Logger {
      * @return True if this Logger is enabled for the WARN level,
      *         false otherwise.
      */
-    public boolean isWarnEnabled();
+    default boolean isWarnEnabled(){
+        return isLogLevelEnabled(LogLevel.Warn);
+    }
 
     /**
      * Log a message at the WARN level.
      *
      * @param msg the message string to be logged
      */
-    public void warn(String msg);
+    default void warn(String msg){
+        log(LogLevel.Warn, msg);
+    }
 
     /**
      * Log a message at the WARN level according to the specified format
@@ -306,7 +360,9 @@ public interface Logger {
      * @param format the format string
      * @param arg    the argument
      */
-    public void warn(String format, Object arg);
+    default void warn(String format, Object arg){
+        log(LogLevel.Warn, format, arg);
+    }
 
     /**
      * Log a message at the WARN level according to the specified format
@@ -322,7 +378,9 @@ public interface Logger {
      * @param format    the format string
      * @param arguments a list of 3 or more arguments
      */
-    public void warn(String format, Object... arguments);
+    default void warn(String format, Object... arguments){
+        log(LogLevel.Warn, format, arguments);
+    }
 
     /**
      * Log a message at the WARN level according to the specified format
@@ -335,7 +393,9 @@ public interface Logger {
      * @param arg1   the first argument
      * @param arg2   the second argument
      */
-    public void warn(String format, Object arg1, Object arg2);
+    default void warn(String format, Object arg1, Object arg2){
+        log(LogLevel.Warn, format, arg1, arg2);
+    }
 
     /**
      * Log an exception (throwable) at the WARN level with an
@@ -344,7 +404,9 @@ public interface Logger {
      * @param msg the message accompanying the exception
      * @param t   the exception (throwable) to log
      */
-    public void warn(String msg, Throwable t);
+    default void warn(String msg, Throwable t){
+        log(LogLevel.Warn, msg, t);
+    }
 
     /**
      * Is the logger instance enabled for the ERROR level?
@@ -352,14 +414,18 @@ public interface Logger {
      * @return True if this Logger is enabled for the ERROR level,
      *         false otherwise.
      */
-    public boolean isErrorEnabled();
+    default boolean isErrorEnabled(){
+        return isLogLevelEnabled(LogLevel.Error);
+    }
 
     /**
      * Log a message at the ERROR level.
      *
      * @param msg the message string to be logged
      */
-    public void error(String msg);
+    default void error(String msg){
+        log(LogLevel.Error, msg);
+    }
 
     /**
      * Log a message at the ERROR level according to the specified format
@@ -371,7 +437,9 @@ public interface Logger {
      * @param format the format string
      * @param arg    the argument
      */
-    public void error(String format, Object arg);
+    default void error(String format, Object arg){
+        log(LogLevel.Error, format, arg);
+    }
 
     /**
      * Log a message at the ERROR level according to the specified format
@@ -384,7 +452,9 @@ public interface Logger {
      * @param arg1   the first argument
      * @param arg2   the second argument
      */
-    public void error(String format, Object arg1, Object arg2);
+    default void error(String format, Object arg1, Object arg2){
+        log(LogLevel.Error, format, arg1, arg2);
+    }
 
     /**
      * Log a message at the ERROR level according to the specified format
@@ -400,7 +470,9 @@ public interface Logger {
      * @param format    the format string
      * @param arguments a list of 3 or more arguments
      */
-    public void error(String format, Object... arguments);
+    default void error(String format, Object... arguments){
+        log(LogLevel.Error, format, arguments);
+    }
 
     /**
      * Log an exception (throwable) at the ERROR level with an
@@ -409,6 +481,8 @@ public interface Logger {
      * @param msg the message accompanying the exception
      * @param t   the exception (throwable) to log
      */
-    public void error(String msg, Throwable t);
+    default void error(String msg, Throwable t){
+        log(LogLevel.Error, msg, t);
+    }
 
 }
