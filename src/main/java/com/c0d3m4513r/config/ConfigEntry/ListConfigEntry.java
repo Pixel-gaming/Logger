@@ -1,7 +1,6 @@
 package com.c0d3m4513r.config.ConfigEntry;
 
-import com.c0d3m4513r.config.iface.IConfigLoaderSaver;
-import com.c0d3m4513r.logger.Logger;
+import com.c0d3m4513r.config.ConfigLogger;
 import com.c0d3m4513r.config.ClassValue;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -16,22 +15,18 @@ import java.util.List;
  */
 public class ListConfigEntry<T> extends SuperConfigEntry<List<T>,T>{
 
-    @NonNull
-    protected final IConfigLoaderSaver configLoaderSaver;
-
-    public ListConfigEntry(@NonNull ClassValue<List<T>, T> value, @NonNull String configPath, @NonNull IConfigLoaderSaver configLoaderSaver) {
+    public ListConfigEntry(@NonNull ClassValue<List<T>, T> value, @NonNull String configPath) {
         super(value,configPath);
-        this.configLoaderSaver = configLoaderSaver;
     }
 
     @Override
     @Nullable
     protected List<T> getValueFromLoader() {
-        return configLoaderSaver.loadConfigKeyList(configPath,value.getClazz());
+        return ConfigLogger.getConfigLoaderSaver().loadConfigKeyList(configPath,value.getClazz());
     }
 
     @Override
     public void saveValue(){
-        configLoaderSaver.saveConfigKeyList(value.getValue(),value.getClazz(), configPath);
+        ConfigLogger.getConfigLoaderSaver().saveConfigKeyList(value.getValue(),value.getClazz(), configPath);
     }
 }
