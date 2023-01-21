@@ -12,7 +12,7 @@ public final class ConfigLogger {
     private static Logger configLogger = null;
 
     public static void setConfigLogger(Logger configLogger) {
-        if (configLogger == null) ConfigLogger.configLogger = configLogger;
+        if (ConfigLogger.configLogger == null) ConfigLogger.configLogger = configLogger;
     }
 
     public static Logger getConfigLogger() {
@@ -25,7 +25,7 @@ public final class ConfigLogger {
     private static IConfigLoaderSaver configLoaderSaver = null;
 
     public static void setConfigLoaderSaver(IConfigLoaderSaver configLoaderSaver) {
-        if (configLoaderSaver == null) ConfigLogger.configLoaderSaver = configLoaderSaver;
+        if (ConfigLogger.configLoaderSaver == null) ConfigLogger.configLoaderSaver = configLoaderSaver;
     }
 
     @NonNull
