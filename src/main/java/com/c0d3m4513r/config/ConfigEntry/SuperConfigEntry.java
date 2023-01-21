@@ -1,7 +1,6 @@
 package com.c0d3m4513r.config.ConfigEntry;
 
 import com.c0d3m4513r.config.ConfigLogger;
-import com.c0d3m4513r.logger.Logger;
 import com.c0d3m4513r.config.ClassValue;
 import com.c0d3m4513r.config.iface.IConfigLoadableSaveable;
 import lombok.*;
@@ -34,6 +33,7 @@ public abstract class SuperConfigEntry<V,T> implements IConfigLoadableSaveable {
         }
     }
 
+    @NonNull
     public V getValue(){
         return value.getValue();
     }

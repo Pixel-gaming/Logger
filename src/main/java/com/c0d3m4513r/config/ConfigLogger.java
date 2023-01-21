@@ -3,9 +3,7 @@ package com.c0d3m4513r.config;
 import com.c0d3m4513r.config.iface.IConfigLoaderSaver;
 import com.c0d3m4513r.logger.Logger;
 import com.c0d3m4513r.logger.NoopLogger;
-import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -29,6 +27,8 @@ public final class ConfigLogger {
     public static void setConfigLoaderSaver(IConfigLoaderSaver configLoaderSaver) {
         if (configLoaderSaver == null) ConfigLogger.configLoaderSaver = configLoaderSaver;
     }
+
+    @NonNull
     public static IConfigLoaderSaver getConfigLoaderSaver() {
         if (configLoaderSaver == null) {
             return new IConfigLoaderSaver(){
