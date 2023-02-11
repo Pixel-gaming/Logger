@@ -15,14 +15,6 @@ public class JavaUtilLogger implements Logger {
     @NonNull
     @Getter
     java.util.logging.Logger logger;
-    private void log(java.util.logging.Level level, String msg, Object... args){
-        String log = msg;
-        if(args!=null) for (val o:args) {
-            //noinspection RegExpRedundantEscape
-            log=log.replaceFirst("\\{\\}",o!=null?o.toString():"null");
-        }
-        logger.log(level,log);
-    }
 
     @Override
     public boolean isLogLevelEnabled(LogLevel level) {
@@ -31,27 +23,27 @@ public class JavaUtilLogger implements Logger {
 
     @Override
     public void log(LogLevel level, String msg) {
-        log(getLevel(level),msg);
+        logger.log(getLevel(level),msg);
     }
 
     @Override
     public void log(LogLevel level, String format, Object arg) {
-        log(getLevel(level),format,arg);
+        logger.log(getLevel(level),format,arg);
     }
 
     @Override
     public void log(LogLevel level, String format, Object arg1, Object arg2) {
-        log(getLevel(level),format,arg1, arg2);
+        logger.log(getLevel(level),format,new Object[]{arg1, arg2});
     }
 
     @Override
     public void log(LogLevel level, String format, Object... arguments) {
-        log(getLevel(level),format,arguments);
+        logger.log(getLevel(level),format,arguments);
     }
 
     @Override
     public void log(LogLevel level, String msg, Throwable t) {
-        log(getLevel(level),msg,t);
+        logger.log(getLevel(level),msg,t);
     }
 
     @Override
