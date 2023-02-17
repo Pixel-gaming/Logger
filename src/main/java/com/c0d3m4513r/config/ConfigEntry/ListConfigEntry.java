@@ -8,16 +8,20 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 /**
- * @type v This is the regular type, e.g. List with String type Parameter
- * @type t This is the due to type erasure
+ * @param <T> The type of elements inside the list
  */
+@EqualsAndHashCode(callSuper = true)
 public class ListConfigEntry<T> extends SuperConfigEntry<List<T>,T>{
 
     public ListConfigEntry(@NonNull ClassValue<List<T>, T> value, @NonNull String configPath) {
-        super(value,configPath);
+        super(value,configPath, true);
     }
+
+    public ListConfigEntry(@NonNull ClassValue<List<T>, T> value, @NonNull String configPath, boolean printValue) {
+        super(value,configPath, printValue);
+    }
+
 
     @Override
     @Nullable

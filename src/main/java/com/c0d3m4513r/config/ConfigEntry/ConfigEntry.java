@@ -1,21 +1,22 @@
 package com.c0d3m4513r.config.ConfigEntry;
 
 import com.c0d3m4513r.config.ConfigLogger;
-import com.c0d3m4513r.config.iface.IConfigLoaderSaver;
-import com.c0d3m4513r.logger.Logger;
 import com.c0d3m4513r.config.ClassValue;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
-@EqualsAndHashCode(callSuper = true)
 /**
- * @type v This is the regular type, e.g. List with String type Parameter
- * @type t This is the due to type erasure
+ * @param <T> The type of value stored at the specified config path
  */
+@EqualsAndHashCode(callSuper = true)
 public class ConfigEntry<T> extends SuperConfigEntry<T,T>{
 
     public ConfigEntry(ClassValue<T, T> value, String configPath) {
-        super(value,configPath);
+        super(value,configPath, true);
+    }
+
+    public ConfigEntry(ClassValue<T, T> value, String configPath, boolean printValue){
+        super(value,configPath, printValue);
     }
     @Override
     @Nullable
