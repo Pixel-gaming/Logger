@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 @Data
@@ -13,11 +14,23 @@ import java.util.concurrent.TimeUnit;
 public class TimeUnitValue implements Comparable<TimeUnitValue> {
     @NonNull
     TimeUnit unit;
-    @NonNull
     long value;
 
     void add(TimeUnitValue unitValue){
         value+=unit.convert(unitValue.value,unitValue.unit);
+    }
+
+    public ChronoUnit getChronoUnit(){
+        switch (unit){
+            case DAYS: return ChronoUnit.DAYS;
+            case HOURS: return ChronoUnit.HOURS;
+            case MINUTES: return ChronoUnit.MINUTES;
+            case MILLISECONDS: return ChronoUnit.MILLIS;
+            case MICROSECONDS: return ChronoUnit.MICROS;
+            case NANOSECONDS: return ChronoUnit.NANOS;
+            case SECONDS:
+            default: return ChronoUnit.SECONDS;
+        }
     }
 
     @Override
