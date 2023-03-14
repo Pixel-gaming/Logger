@@ -1,6 +1,7 @@
 package com.c0d3m4513r.config;
 
 import lombok.*;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
@@ -150,6 +151,12 @@ public class TimeEntry implements Comparable<TimeEntry> {
             }
         }
         return Optional.of(te);
+    }
+    @Contract(pure = true)
+    public static @NonNull TimeEntry of(@NonNull TimeUnitValue tuv){
+        TimeEntry te = new TimeEntry();
+        te.setTime(tuv.getUnit(),tuv.getValue());
+        return te;
     }
 
     public void add(TimeEntry te){
