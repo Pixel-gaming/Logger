@@ -1,23 +1,25 @@
 package com.c0d3m4513r.config;
 
-import com.c0d3m4513r.logger.Logger;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigInteger;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 @Data
 @Setter(AccessLevel.NONE)
-@Getter(AccessLevel.NONE)
+@Getter(AccessLevel.PUBLIC)
 @NoArgsConstructor
-public class TimeEntry{
-    public long days;
-    public long hours;
-    public long minutes;
-    public long seconds;
-    public long ms;
-    public long us;
-    public long ns;
+@AllArgsConstructor
+@Builder
+public class TimeEntry implements Comparable<TimeEntry> {
+    public long days = 0;
+    public long hours = 0;
+    public long minutes = 0;
+    public long seconds = 0;
+    public long ms = 0;
+    public long us = 0;
+    public long ns = 0;
 
     public long getTime(TimeUnit unit){
         switch (unit){
@@ -169,6 +171,16 @@ public class TimeEntry{
         us-=te.us;
         ns-=te.ns;
     }
+
+    public BigInteger to(TimeUnit unit){
+        return BigInteger.valueOf(unit.convert(ns, TimeUnit.NANOSECONDS))
+                .add(BigInteger.valueOf(unit.convert(us, TimeUnit.MICROSECONDS)))
+                .add(BigInteger.valueOf(unit.convert(ms, TimeUnit.MILLISECONDS)))
+                .add(BigInteger.valueOf(unit.convert(seconds, TimeUnit.SECONDS)))
+                .add(BigInteger.valueOf(unit.convert(minutes, TimeUnit.MINUTES)))
+                .add(BigInteger.valueOf(unit.convert(hours, TimeUnit.HOURS)))
+                .add(BigInteger.valueOf(unit.convert(days, TimeUnit.DAYS)));
+    }
     public long getHours(){return days*24+hours;}
     public long getMinutes(){return getHours()*60+minutes;}
     public long getSeconds(){return getMinutes()*60+seconds;}
@@ -202,17 +214,34 @@ public class TimeEntry{
             return new TimeUnitValue(TimeUnit.NANOSECONDS,getNs());
         }
     }
-    public boolean equals(long value,TimeUnit unit){
-        switch (unit){
-            case NANOSECONDS:return value==getNs();
-            case MICROSECONDS:return value==getUs();
-            case MILLISECONDS:return value==getMs();
-            case SECONDS:return value==getSeconds();
-            case MINUTES:return value==getMinutes();
-            case HOURS:return value==getHours();
-            case DAYS:return value==days;
-            default:throw new RuntimeException("TimeUnit had more Enum variants than expected");
-        }
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        if (days != 0) sb.append(days).append("d");
+        if (hours != 0) sb.append(hours).append("h");
+        if (minutes != 0) sb.append(minutes).append("m");
+        if (seconds != 0) sb.append(seconds).append("s");
+        if (ms != 0) sb.append(ms).append("ms");
+        if (us != 0) sb.append(us).append("us");
+        if (ns != 0) sb.append(ns).append("ns");
+        return sb.toString();
     }
 
+    @Override
+    public int compareTo(@NonNull TimeEntry o) {
+        return to(TimeUnit.NANOSECONDS).compareTo(o.to(TimeUnit.NANOSECONDS));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TimeEntry) {
+            return compareTo((TimeEntry) obj) == 0;
+        } else {
+            return false;
+        }
+    }
+    @Override
+    public int hashCode(){
+        return to(TimeUnit.NANOSECONDS).hashCode();
+    }
 }
